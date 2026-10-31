@@ -1,0 +1,5 @@
+# Paksa LF supaya skrip .sh tetap jalan di kontainer Linux walau dikerjakan di Windows
+*.sh   text eol=lf
+*.sql  text eol=lf
+*.yml  text eol=lf
+*.json text eol=lf

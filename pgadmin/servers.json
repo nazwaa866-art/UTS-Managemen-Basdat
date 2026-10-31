@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "PostgreSQL UTS MBD",
+      "Group": "UTS MBD",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "db_uts_mbd",
+      "Username": "postgres",
+      "SSLMode": "prefer"
+    }
+  }
+}

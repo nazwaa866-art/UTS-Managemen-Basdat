@@ -1,0 +1,78 @@
+﻿postgres_nazwakholifah  | 	VALUES ('20269994', 'Email Salah', 'bukan-email', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:13:52.086 UTC [135] ERROR:  null value in column "nama" of relation "mahasiswas" violates not-null constraint
+pgadmin_nazwakholifah   | email config is {'CHECK_EMAIL_DELIVERABILITY': False, 'ALLOW_SPECIAL_EMAIL_DOMAINS': [], 'GLOBALLY_DELIVERABLE': True}
+pgadmin_nazwakholifah   | /venv/lib/python3.14/site-packages/sshtunnel.py:1040: SyntaxWarning: 'return' in a 'finally' block
+postgres_nazwakholifah  | 2026-10-31 14:13:52.086 UTC [135] DETAIL:  Failing row contains (13, 20269993, null, null@contoh.ac.id, Informatika, 2026, 3.00, 2026-10-31 21:13:52.085875+07).
+pgadmin_nazwakholifah   |   return (ssh_host,
+postgres_nazwakholifah  | 2026-10-31 14:13:52.086 UTC [135] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269993', NULL, 'null@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.291 UTC [199] ERROR:  duplicate key value violates unique constraint "pk_mahasiswas"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.291 UTC [199] DETAIL:  Key (id)=(1) already exists.
+postgres_nazwakholifah  | 2026-10-31 14:14:20.291 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (id, nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	OVERRIDING SYSTEM VALUE
+postgres_nazwakholifah  | 	VALUES (1, '20269998', 'Id Kembar', 'idkembar@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.293 UTC [199] ERROR:  duplicate key value violates unique constraint "uq_mahasiswas_nim"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.293 UTC [199] DETAIL:  Key (nim)=(20269999) already exists.
+pgadmin_nazwakholifah   | /venv/lib/python3.14/site-packages/alembic/operations/batch.py:298: UserWarning: Unnamed CHECK constraint on reflected table 'sharedserver' is being omitted from the table recreate; pass the constraint explicitly using batch_alter_table.table_args.  Naming CHECK constraints avoids this going forward.
+pgadmin_nazwakholifah   |   util.warn(
+pgadmin_nazwakholifah   | NOTE: Configuring authentication for SERVER mode.
+pgadmin_nazwakholifah   | 
+pgadmin_nazwakholifah   | pgAdmin 4 - Application Initialisation
+pgadmin_nazwakholifah   | ======================================
+pgadmin_nazwakholifah   | 
+pgadmin_nazwakholifah   | ----------
+pgadmin_nazwakholifah   | Loading servers with:
+pgadmin_nazwakholifah   | User: admin@pgadmin.org
+pgadmin_nazwakholifah   | SQLite pgAdmin config: /var/lib/pgadmin/pgadmin4.db
+pgadmin_nazwakholifah   | ----------
+pgadmin_nazwakholifah   | /venv/lib/python3.14/site-packages/sshtunnel.py:1040: SyntaxWarning: 'return' in a 'finally' block
+postgres_nazwakholifah  | 2026-10-31 14:14:20.293 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+pgadmin_nazwakholifah   |   return (ssh_host,
+pgadmin_nazwakholifah   | Added 1 Server Group(s) and 1 Server(s).
+postgres_nazwakholifah  | 	VALUES ('20269999', 'NIM Kembar', 'nimkembar@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.296 UTC [199] ERROR:  duplicate key value violates unique constraint "uq_mahasiswas_email"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.296 UTC [199] DETAIL:  Key (email)=(uji@contoh.ac.id) already exists.
+postgres_nazwakholifah  | 2026-10-31 14:14:20.296 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269997', 'Email Kembar', 'uji@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.300 UTC [199] ERROR:  new row for relation "mahasiswas" violates check constraint "ck_mahasiswas_ipk"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.300 UTC [199] DETAIL:  Failing row contains (17, 20269996, IPK Ngawur, ipk@contoh.ac.id, Informatika, 2026, 4.50, 2026-10-31 21:14:20.299323+07).
+postgres_nazwakholifah  | 2026-10-31 14:14:20.300 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269996', 'IPK Ngawur', 'ipk@contoh.ac.id', 2026, 4.50);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.302 UTC [199] ERROR:  new row for relation "mahasiswas" violates check constraint "ck_mahasiswas_angkatan"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.302 UTC [199] DETAIL:  Failing row contains (18, 20269995, Angkatan Lama, lama@contoh.ac.id, Informatika, 1999, 3.00, 2026-10-31 21:14:20.301192+07).
+postgres_nazwakholifah  | 2026-10-31 14:14:20.302 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269995', 'Angkatan Lama', 'lama@contoh.ac.id', 1999, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.303 UTC [199] ERROR:  new row for relation "mahasiswas" violates check constraint "ck_mahasiswas_nim"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.303 UTC [199] DETAIL:  Failing row contains (19, ABCDEFGH, NIM Huruf, huruf@contoh.ac.id, Informatika, 2026, 3.00, 2026-10-31 21:14:20.302608+07).
+postgres_nazwakholifah  | 2026-10-31 14:14:20.303 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('ABCDEFGH', 'NIM Huruf', 'huruf@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.305 UTC [199] ERROR:  new row for relation "mahasiswas" violates check constraint "ck_mahasiswas_email"
+postgres_nazwakholifah  | 2026-10-31 14:14:20.305 UTC [199] DETAIL:  Failing row contains (20, 20269994, Email Salah, bukan-email, Informatika, 2026, 3.00, 2026-10-31 21:14:20.303984+07).
+postgres_nazwakholifah  | 2026-10-31 14:14:20.305 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269994', 'Email Salah', 'bukan-email', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:20.305 UTC [199] ERROR:  null value in column "nama" of relation "mahasiswas" violates not-null constraint
+postgres_nazwakholifah  | 2026-10-31 14:14:20.305 UTC [199] DETAIL:  Failing row contains (21, 20269993, null, null@contoh.ac.id, Informatika, 2026, 3.00, 2026-10-31 21:14:20.305528+07).
+postgres_nazwakholifah  | 2026-10-31 14:14:20.305 UTC [199] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269993', NULL, 'null@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:21.069 UTC [206] ERROR:  permission denied for schema salam at character 14
+postgres_nazwakholifah  | 2026-10-31 14:14:21.069 UTC [206] STATEMENT:  CREATE TABLE salam.tabel_ilegal (id int);
+postgres_nazwakholifah  | 2026-10-31 14:14:21.071 UTC [206] ERROR:  must be owner of table mahasiswas
+postgres_nazwakholifah  | 2026-10-31 14:14:21.071 UTC [206] STATEMENT:  ALTER TABLE salam.mahasiswas ADD COLUMN catatan text;
+postgres_nazwakholifah  | 2026-10-31 14:14:21.071 UTC [206] ERROR:  must be owner of table audit_log
+postgres_nazwakholifah  | 2026-10-31 14:14:21.071 UTC [206] STATEMENT:  DROP TABLE salam.audit_log;
+postgres_nazwakholifah  | 2026-10-31 14:14:21.072 UTC [206] ERROR:  permission denied for table mahasiswas
+postgres_nazwakholifah  | 2026-10-31 14:14:21.072 UTC [206] STATEMENT:  TRUNCATE salam.mahasiswas;
+postgres_nazwakholifah  | 2026-10-31 14:14:21.086 UTC [206] ERROR:  permission denied for table mahasiswas
+postgres_nazwakholifah  | 2026-10-31 14:14:21.086 UTC [206] STATEMENT:  INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+postgres_nazwakholifah  | 	VALUES ('20269002', 'Uji BI', 'uji.bi@contoh.ac.id', 2026, 3.00);
+postgres_nazwakholifah  | 2026-10-31 14:14:21.087 UTC [206] ERROR:  permission denied for table mahasiswas
+postgres_nazwakholifah  | 2026-10-31 14:14:21.087 UTC [206] STATEMENT:  UPDATE salam.mahasiswas SET ipk = 4.00 WHERE nim = '20240001';
+postgres_nazwakholifah  | 2026-10-31 14:14:21.088 UTC [206] ERROR:  permission denied for table mahasiswas
+postgres_nazwakholifah  | 2026-10-31 14:14:21.088 UTC [206] STATEMENT:  DELETE FROM salam.mahasiswas WHERE nim = '20240001';
+postgres_nazwakholifah  | 2026-10-31 14:14:21.089 UTC [206] ERROR:  permission denied for schema salam at character 14
+postgres_nazwakholifah  | 2026-10-31 14:14:21.089 UTC [206] STATEMENT:  CREATE TABLE salam.tabel_ilegal_bi (id int);
+postgres_nazwakholifah  | 2026-10-31 14:14:21.158 UTC [206] ERROR:  permission denied for table uji_data_engineer
+postgres_nazwakholifah  | 2026-10-31 14:14:21.158 UTC [206] STATEMENT:  INSERT INTO salam.uji_data_engineer (catatan) VALUES ('coba tulis bi_dev');
+postgres_nazwakholifah  | 2026-10-31 14:14:21.553 UTC [213] ERROR:  new row for relation "mahasiswas" violates check constraint "ck_mahasiswas_ipk"
+postgres_nazwakholifah  | 2026-10-31 14:14:21.553 UTC [213] DETAIL:  Failing row contains (24, 20269102, Transaksi Dua, trx2@contoh.ac.id, Informatika, 2026, 9.99, 2026-10-31 21:14:21.519704+07).
+postgres_nazwakholifah  | 2026-10-31 14:14:21.553 UTC [213] STATEMENT:  UPDATE salam.mahasiswas SET ipk = 9.99 WHERE nim = '20269102';

@@ -1,0 +1,9 @@
+﻿ id |   nim    |      nama      |            email            | angkatan | ipk  
+----+----------+----------------+-----------------------------+----------+------
+  1 | 20240001 | Andi Pratama   | andi.pratama@contoh.ac.id   |     2024 | 3.45
+  2 | 20240002 | Budi Santoso   | budi.santoso@contoh.ac.id   |     2024 | 3.10
+  3 | 20250001 | Citra Lestari  | citra.lestari@contoh.ac.id  |     2025 | 3.80
+  4 | 20250002 | Dewi Anggraini | dewi.anggraini@contoh.ac.id |     2025 | 3.25
+  5 | 20260001 | Eko Wijaya     | eko.wijaya@contoh.ac.id     |     2026 | 3.60
+(5 rows)
+

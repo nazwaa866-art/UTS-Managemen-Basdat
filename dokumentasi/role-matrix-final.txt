@@ -1,0 +1,7 @@
+﻿    rolname    | sel | ins | upd | del | create_objek 
+---------------+-----+-----+-----+-----+--------------
+ backend_dev   | t   | t   | t   | t   | f
+ bi_dev        | t   | f   | f   | f   | f
+ data_engineer | t   | t   | t   | t   | t
+(3 rows)
+

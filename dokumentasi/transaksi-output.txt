@@ -1,0 +1,149 @@
+-- =============================================================================
+-- 12_transaksi_pembeda.sql  -  Fitur / aktivitas / transaksi PEMBEDA (catatan soal)
+-- Dijalankan sebagai backend_dev (lewat SET ROLE) supaya jejaknya tercatat atas nama
+-- backend_dev di salam.audit_log.
+--   docker exec -i postgres_NAMA psql -U postgres -d db_uts_mbd -a -f /sql/12_transaksi_pembeda.sql
+-- >>> HIGHLIGHT bagian ini di laporan PDF <<<
+-- =============================================================================
+\set ON_ERROR_STOP off
+SET ROLE backend_dev;
+SET
+\echo ''
+
+\echo '=== A. Transaksi COMMIT : dua data masuk sekaligus ==='
+=== A. Transaksi COMMIT : dua data masuk sekaligus ===
+BEGIN;
+BEGIN
+INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+VALUES ('20269101', 'Transaksi Satu', 'trx1@contoh.ac.id', 2026, 3.20);
+INSERT 0 1
+INSERT INTO salam.mahasiswas (nim, nama, email, angkatan, ipk)
+VALUES ('20269102', 'Transaksi Dua',  'trx2@contoh.ac.id', 2026, 3.40);
+INSERT 0 1
+COMMIT;
+COMMIT
+SELECT nim, nama FROM salam.mahasiswas WHERE nim LIKE '2026910%' ORDER BY nim;
+   nim    |      nama      
+----------+----------------
+ 20269101 | Transaksi Satu
+ 20269102 | Transaksi Dua
+(2 rows)
+
+\echo ''
+
+\echo '=== B. Transaksi ROLLBACK : DELETE massal dibatalkan, data kembali utuh ==='
+=== B. Transaksi ROLLBACK : DELETE massal dibatalkan, data kembali utuh ===
+SELECT count(*) AS jumlah_sebelum FROM salam.mahasiswas;
+ jumlah_sebelum 
+----------------
+              7
+(1 row)
+
+BEGIN;
+BEGIN
+DELETE FROM salam.mahasiswas;
+DELETE 7
+SELECT count(*) AS jumlah_di_dalam_transaksi FROM salam.mahasiswas;
+ jumlah_di_dalam_transaksi 
+---------------------------
+                         0
+(1 row)
+
+ROLLBACK;
+ROLLBACK
+SELECT count(*) AS jumlah_setelah_rollback FROM salam.mahasiswas;
+ jumlah_setelah_rollback 
+-------------------------
+                       7
+(1 row)
+
+\echo ''
+
+\echo '=== C. SAVEPOINT : satu langkah gagal, langkah lain tetap di-COMMIT ==='
+=== C. SAVEPOINT : satu langkah gagal, langkah lain tetap di-COMMIT ===
+BEGIN;
+BEGIN
+UPDATE salam.mahasiswas SET ipk = 3.90 WHERE nim = '20269101';
+UPDATE 1
+SAVEPOINT sp_aman;
+SAVEPOINT
+\echo '--- langkah ini sengaja melanggar CHECK ipk (akan ERROR):'
+--- langkah ini sengaja melanggar CHECK ipk (akan ERROR):
+UPDATE salam.mahasiswas SET ipk = 9.99 WHERE nim = '20269102';
+psql:/sql/12_transaksi_pembeda.sql:36: ERROR:  new row for relation "mahasiswas" violates check constraint "ck_mahasiswas_ipk"
+DETAIL:  Failing row contains (35, 20269102, Transaksi Dua, trx2@contoh.ac.id, Informatika, 2026, 9.99, 2026-10-31 21:35:56.227803+07).
+ROLLBACK TO SAVEPOINT sp_aman;
+ROLLBACK
+UPDATE salam.mahasiswas SET ipk = 3.75 WHERE nim = '20269102';
+UPDATE 1
+COMMIT;
+COMMIT
+SELECT nim, nama, ipk FROM salam.mahasiswas WHERE nim LIKE '2026910%' ORDER BY nim;
+   nim    |      nama      | ipk  
+----------+----------------+------
+ 20269101 | Transaksi Satu | 3.90
+ 20269102 | Transaksi Dua  | 3.75
+(2 rows)
+
+\echo ''
+
+\echo '=== D. Jejak otomatis di audit_log (trigger) : catat siapa, kapan, apa ==='
+=== D. Jejak otomatis di audit_log (trigger) : catat siapa, kapan, apa ===
+\echo '    (transaksi B yang di-ROLLBACK tidak meninggalkan jejak)'
+    (transaksi B yang di-ROLLBACK tidak meninggalkan jejak)
+SELECT id, to_char(waktu, 'HH24:MI:SS') AS jam, operasi, oleh,
+       COALESCE(data_baru->>'nim', data_lama->>'nim') AS nim,
+       data_lama->>'ipk' AS ipk_lama, data_baru->>'ipk' AS ipk_baru
+FROM salam.audit_log ORDER BY id;
+ id |   jam    | operasi |    oleh     |   nim    | ipk_lama | ipk_baru 
+----+----------+---------+-------------+----------+----------+----------
+  1 | 21:13:52 | INSERT  | postgres    | 20269999 |          | 3.50
+  2 | 21:13:52 | DELETE  | postgres    | 20269999 | 3.50     | 
+  3 | 21:14:20 | INSERT  | postgres    | 20269999 |          | 3.50
+  4 | 21:14:20 | DELETE  | postgres    | 20269999 | 3.50     | 
+  5 | 21:14:21 | INSERT  | backend_dev | 20269001 |          | 3.10
+  6 | 21:14:21 | UPDATE  | backend_dev | 20269001 | 3.10     | 3.55
+  7 | 21:14:21 | DELETE  | backend_dev | 20269001 | 3.55     | 
+  8 | 21:14:21 | INSERT  | backend_dev | 20269101 |          | 3.20
+  9 | 21:14:21 | INSERT  | backend_dev | 20269102 |          | 3.40
+ 17 | 21:14:21 | UPDATE  | backend_dev | 20269101 | 3.20     | 3.90
+ 18 | 21:14:21 | UPDATE  | backend_dev | 20269102 | 3.40     | 3.75
+ 19 | 21:14:21 | DELETE  | backend_dev | 20269101 | 3.90     | 
+ 20 | 21:14:21 | DELETE  | backend_dev | 20269102 | 3.75     | 
+ 21 | 21:35:55 | INSERT  | postgres    | 20269999 |          | 3.50
+ 22 | 21:35:55 | DELETE  | postgres    | 20269999 | 3.50     | 
+ 23 | 21:35:55 | INSERT  | backend_dev | 20269001 |          | 3.10
+ 24 | 21:35:55 | UPDATE  | backend_dev | 20269001 | 3.10     | 3.55
+ 25 | 21:35:55 | DELETE  | backend_dev | 20269001 | 3.55     | 
+ 26 | 21:35:56 | INSERT  | backend_dev | 20269101 |          | 3.20
+ 27 | 21:35:56 | INSERT  | backend_dev | 20269102 |          | 3.40
+ 35 | 21:35:56 | UPDATE  | backend_dev | 20269101 | 3.20     | 3.90
+ 36 | 21:35:56 | UPDATE  | backend_dev | 20269102 | 3.40     | 3.75
+(22 rows)
+
+\echo ''
+
+\echo '=== E. View ringkasan per angkatan (analisis) ==='
+=== E. View ringkasan per angkatan (analisis) ===
+SELECT * FROM salam.v_ringkasan_angkatan;
+ angkatan | jumlah_mahasiswa | rata_rata_ipk | ipk_tertinggi 
+----------+------------------+---------------+---------------
+     2024 |                2 |          3.28 |          3.45
+     2025 |                2 |          3.53 |          3.80
+     2026 |                3 |          3.75 |          3.90
+(3 rows)
+
+\echo ''
+
+\echo '=== F. Rapikan data uji transaksi ==='
+=== F. Rapikan data uji transaksi ===
+DELETE FROM salam.mahasiswas WHERE nim LIKE '2026910%';
+DELETE 2
+SELECT count(*) AS jumlah_akhir FROM salam.mahasiswas;
+ jumlah_akhir 
+--------------
+            5
+(1 row)
+
+RESET ROLE;
+RESET

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Laporan UTS MBD - PostgreSQL + Docker Compose</title>
+  <style>
+    @page { size: A4; margin: 14mm; }
+    * { box-sizing: border-box; }
+    body { font: 10pt/1.45 Arial, sans-serif; color: #172033; margin: 0; }
+    h1 { font-size: 23pt; margin: 0 0 5mm; color: #123b68; }
+    h2 { font-size: 15pt; margin: 0 0 4mm; color: #123b68; }
+    p { margin: 2mm 0; }
+    .cover { padding: 8mm 0 5mm; border-bottom: 2px solid #1976d2; margin-bottom: 7mm; }
+    .meta { color: #44546a; font-size: 11pt; }
+    .summary { border-collapse: collapse; width: 100%; margin: 4mm 0 7mm; }
+    .summary th, .summary td { border: 1px solid #c8d2df; padding: 2.4mm; text-align: left; }
+    .summary th { background: #eaf2fb; }
+    .note { background: #fff5dc; border-left: 4px solid #e4a300; padding: 3mm; margin-top: 5mm; }
+    .page { break-before: page; page-break-before: always; }
+    figure { margin: 0 0 5mm; break-inside: avoid; page-break-inside: avoid; }
+    figure img { display: block; width: 100%; max-height: 158mm; object-fit: contain; border: 1px solid #ccd5e0; }
+    figcaption { margin-top: 1.5mm; color: #35445a; font-size: 9pt; }
+    .pair figure img { max-height: 111mm; }
+    .pair { display: grid; grid-template-columns: 1fr; gap: 5mm; }
+    .small { font-size: 9pt; color: #44546a; }
+    ul { margin: 2mm 0 0; padding-left: 6mm; }
+    .footer { margin-top: 7mm; color: #64748b; font-size: 8.5pt; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>Laporan UTS Manajemen Basis Data</h1>
+    <p class="meta">PostgreSQL 15 + pgAdmin 4 + Docker Compose</p>
+    <p><strong>Nama:</strong> nazwakholifah</p>
+    <p><strong>NIM3:</strong> 138</p>
+    <p><strong>Database:</strong> <code>db_uts_mbd</code> &nbsp; <strong>Skema:</strong> <code>salam</code></p>
+    <p><strong>Port host:</strong> PostgreSQL <code>22138</code> &nbsp; pgAdmin <code>44138</code></p>
+  </section>
+
+  <h2>Ringkasan pelaksanaan</h2>
+  <table class="summary">
+    <thead><tr><th>Pemeriksaan</th><th>Hasil</th></tr></thead>
+    <tbody>
+      <tr><td>Docker Compose</td><td>PostgreSQL dan pgAdmin berjalan; PostgreSQL berstatus healthy.</td></tr>
+      <tr><td>Akses database</td><td>Terhubung dari pgAdmin melalui jaringan Docker dan dari DBeaver melalui localhost:22138.</td></tr>
+      <tr><td>Skema dan data</td><td>Skema salam, tabel mahasiswas, constraint, trigger audit, dan view tersedia; 5 data awal tersisa.</td></tr>
+      <tr><td>Bukti constraint</td><td>INSERT valid berhasil; 8 pelanggaran constraint menghasilkan error yang diharapkan.</td></tr>
+      <tr><td>Bukti hak akses</td><td>backend_dev CRUD tanpa DDL; bi_dev hanya SELECT; data_engineer pemilik skema dan objek.</td></tr>
+      <tr><td>Transaksi pembeda</td><td>COMMIT, ROLLBACK, SAVEPOINT, trigger audit, dan view ringkasan berhasil diuji.</td></tr>
+    </tbody>
+  </table>
+
+  <section class="page">
+    <h2>Konfigurasi dan bukti layanan</h2>
+    <p>Password pada bukti konfigurasi disamarkan. Port PostgreSQL yang dipublikasikan adalah 22138 dan port pgAdmin adalah 44138.</p>
+    <div class="pair">
+      <figure><img src="08-terminal-env.png" alt="Konfigurasi .env dengan password disamarkan"><figcaption>1. Konfigurasi .env, seluruh password disamarkan.</figcaption></figure>
+      <figure><img src="09-terminal-compose.png" alt="Konfigurasi Docker Compose"><figcaption>2. Layanan, port, healthcheck, jaringan, dan volume Docker Compose.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Docker Desktop</h2>
+    <div class="pair">
+      <figure><img src="02-docker-containers.png" alt="Kontainer proyek di Docker Desktop"><figcaption>3. Kontainer proyek berjalan dan port host terpublikasi.</figcaption></figure>
+      <figure><img src="02-docker-volumes.png" alt="Volume proyek di Docker Desktop"><figcaption>4. Volume persisten PostgreSQL dan pgAdmin.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Status terminal</h2>
+    <figure><img src="01-terminal-docker.png" alt="Status layanan dan data dari terminal"><figcaption>5. Terminal: status Compose, kesiapan koneksi internal, dan lima data mahasiswa.</figcaption></figure>
+  </section>
+
+  <section class="page">
+    <h2>Akses pgAdmin dan DBeaver</h2>
+    <div class="pair">
+      <figure><img src="03-pgadmin-query.png" alt="Query mahasiswa di pgAdmin"><figcaption>6. pgAdmin: server terhubung dan hasil SELECT pada salam.mahasiswas.</figcaption></figure>
+      <figure><img src="04-dbeaver-test-connection.png" alt="Uji koneksi DBeaver berhasil"><figcaption>7. DBeaver: Test Connection berhasil ke PostgreSQL 15.19.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Query dari DBeaver</h2>
+    <figure><img src="04-dbeaver-query.png" alt="Hasil query mahasiswa di DBeaver"><figcaption>8. DBeaver: query eksternal melalui localhost:22138 menampilkan lima baris.</figcaption></figure>
+  </section>
+
+  <section class="page">
+    <h2>Bukti constraint dan hak akses</h2>
+    <p>File keluaran lengkap: <code>constraint-output.txt</code> dan <code>roles-output.txt</code>.</p>
+    <div class="pair">
+      <figure><img src="05-terminal-constraint.png" alt="Bukti constraint dari terminal"><figcaption>9. Terminal: PRIMARY KEY, UNIQUE, CHECK, dan NOT NULL menolak data tidak valid.</figcaption></figure>
+      <figure><img src="06-terminal-roles.png" alt="Bukti hak akses role dari terminal"><figcaption>10. Terminal: matriks hak akses dan penolakan operasi yang tidak diizinkan.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Transaksi pembeda dan audit</h2>
+    <figure><img src="07-terminal-transaksi.png" alt="Bukti transaksi dan audit dari terminal"><figcaption>11. Terminal: COMMIT, ROLLBACK, SAVEPOINT, audit trigger, view, dan pembersihan data uji.</figcaption></figure>
+    <p class="small">Keluaran mentah seluruh skrip tersedia di <code>constraint-output.txt</code>, <code>roles-output.txt</code>, dan <code>transaksi-output.txt</code>.</p>
+    <div class="note"><strong>Publikasi:</strong> langkah push GitHub dan pengumpulan ke LMS belum dilakukan karena URL repositori dan akses LMS belum tersedia. File <code>.env</code> tidak dimasukkan ke bukti atau publikasi.</div>
+    <p class="footer">Disusun dari hasil eksekusi pada lingkungan Docker lokal. Tidak ada password yang dicantumkan dalam laporan ini.</p>
+  </section>
+</body>
+</html>

@@ -1,0 +1,3 @@
+﻿NAME                     STATUS                   PORTS
+pgadmin_nazwakholifah    Up 7 minutes             0.0.0.0:44138->80/tcp, [::]:44138->80/tcp
+postgres_nazwakholifah   Up 7 minutes (healthy)   0.0.0.0:22138->5432/tcp, [::]:22138->5432/tcp

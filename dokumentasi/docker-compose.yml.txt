@@ -1,0 +1,71 @@
+# =============================================================================
+# UTS Manajemen Basis Data - PostgreSQL + pgAdmin4 (kontainerisasi)
+# Semua nilai sensitif / yang perlu disesuaikan dibaca dari file .env
+# (username, password, NAMA, 3 digit NIM) -> TIDAK ada hardcode di file ini.
+# =============================================================================
+name: uts-mbd
+
+services:
+  # ---------------------------------------------------------------------------
+  # Service 1 : PostgreSQL
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine                       # versi 15 (rentang soal: 9-15)
+    container_name: postgres_${NAMA:?isi NAMA di file .env}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?isi POSTGRES_USER di .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?isi POSTGRES_PASSWORD di .env}
+      POSTGRES_DB: ${POSTGRES_DB:?isi POSTGRES_DB di .env}
+      # password untuk 3 user baru (soal no.4) - juga dari .env, dipakai initdb/00_init.sh
+      BACKEND_DEV_PASSWORD: ${BACKEND_DEV_PASSWORD:?isi BACKEND_DEV_PASSWORD di .env}
+      BI_DEV_PASSWORD: ${BI_DEV_PASSWORD:?isi BI_DEV_PASSWORD di .env}
+      DATA_ENGINEER_PASSWORD: ${DATA_ENGINEER_PASSWORD:?isi DATA_ENGINEER_PASSWORD di .env}
+      PGTZ: Asia/Jakarta
+    ports:
+      # port EKSTERNAL (host) 22XXX  ->  port INTERNAL kontainer 5432
+      - "22${NIM3:?isi NIM3 (3 digit terakhir NIM) di .env}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data            # data tetap ada walau kontainer dihapus
+      - ./initdb:/docker-entrypoint-initdb.d:ro     # dijalankan otomatis SEKALI saat volume masih kosong
+      - ./sql:/sql:ro                               # skrip SQL (init + pembuktian)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - mbd_net
+
+  # ---------------------------------------------------------------------------
+  # Service 2 : pgAdmin4
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_${NAMA}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy                  # tunggu PostgreSQL siap dulu
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?isi PGADMIN_DEFAULT_EMAIL di .env}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?isi PGADMIN_DEFAULT_PASSWORD di .env}
+      PGADMIN_DISABLE_POSTFIX: "true"
+    ports:
+      # port EKSTERNAL (host) 44XXX  ->  port INTERNAL kontainer 80
+      - "44${NIM3}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      # server PostgreSQL sudah terdaftar otomatis di pgAdmin (fitur pembeda)
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    networks:
+      - mbd_net
+
+networks:
+  mbd_net:
+    name: mbd_net_${NAMA}
+    driver: bridge
+
+volumes:
+  pg_data:
+  pgadmin_data:
